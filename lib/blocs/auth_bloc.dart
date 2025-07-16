@@ -17,7 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: event.email, password: event.password);
-      emit(AuthSuccess());
+      emit(const AuthSuccess("Sign Up Successfully"));
     } on FirebaseAuthException catch (e) {
       emit(
         AuthFailure(e.message ?? 'SignUp failed'),
@@ -33,7 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: event.email, password: event.password);
-      emit(AuthSuccess());
+      emit(const AuthSuccess("Login Successfully"));
     } on FirebaseAuthException catch (e) {
       emit(AuthFailure(e.message ?? "Login Failed"));
     } catch (e) {

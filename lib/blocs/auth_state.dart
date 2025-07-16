@@ -11,7 +11,12 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class AuthSuccess extends AuthState {}
+class AuthSuccess extends AuthState {
+  final String successMsg;
+  const AuthSuccess(this.successMsg);
+  @override
+  List<Object?> get props => [successMsg];
+}
 
 class AuthFailure extends AuthState {
   final String error;
