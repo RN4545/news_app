@@ -51,10 +51,10 @@ class _ListNewsScreenState extends State<ListNewsScreen> {
               final article = state.articles[index];
 
               return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                child: InkWell(
+                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  child: InkWell(
                   onTap: () {
                     if (article.url != null) {
                       launchExternalURL(article.url!);
@@ -98,7 +98,7 @@ class _ListNewsScreenState extends State<ListNewsScreen> {
                                 Text(
                                   article.source?.name ?? 'Unknown Source',
                                   style: const TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 12.0,
                                       fontWeight: FontWeight.w500),
                                 ),
                                 Text(

@@ -1,15 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news/blocs/auth_bloc.dart';
+import 'package:news/blocs/auth_event.dart';
+import 'package:news/blocs/auth_state.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.blue,
-      //   title: Text("Login Page"),),
-      body: _body(),
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthLoading) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else if (state is AuthSuccess) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Signup Successfully"),
+              ),
+            );
+            Navigator.pop(context);
+          } else if (state is AuthFailure) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("❌ ${state.error}")),
+            );
+          }
+          // TODO: implement listener
+        },
+        child: _body(),
+      ),
     );
   }
 
@@ -56,6 +93,7 @@ class SignupScreen extends StatelessWidget {
             height: 14.0,
           ),
           TextFormField(
+            controller: nameController,
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(
               hintText: "eg.Roshan Arun Nakate",
@@ -71,6 +109,7 @@ class SignupScreen extends StatelessWidget {
             height: 20.0,
           ),
           TextFormField(
+            controller: emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(
               hintText: "abc@gmail.com",
@@ -86,8 +125,9 @@ class SignupScreen extends StatelessWidget {
             height: 20.0,
           ),
           TextFormField(
+            controller: passController,
             obscureText: true,
-            keyboardType: TextInputType.emailAddress,
+            keyboardType: TextInputType.text,
             decoration: const InputDecoration(
               hintText: "Abc@123",
               labelText: "Enter Your password",
@@ -105,7 +145,19 @@ class SignupScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   minimumSize: const Size(double.infinity, 44.0)),
-              onPressed: () {},
+              onPressed: () {
+                final email = emailController.text.trim();
+                final pass = passController.text.trim();
+                if (email.isNotEmpty && pass.isNotEmpty) {
+                  context.read<AuthBloc>().add(
+                        SignupRequested(email, pass),
+                      );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Fill all fields!")),
+                  );
+                }
+              },
               child: const Text(
                 "Sing Up",
                 style: TextStyle(color: Colors.white, fontSize: 18.0),
